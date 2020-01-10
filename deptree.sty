@@ -10,9 +10,6 @@
 \immediate\openout\deptree@graph=\jobname.gr
 \AtEndDocument{\immediate\closeout\deptree@graph}
 
-% write literal spaces after commands into the file
-\newcommand*\deptree@space{ }
-
 % alter \label and \ref so that they write into the graph file
 \AtBeginDocument{%
     \let\deptree@origlabel\label
@@ -27,7 +24,7 @@
         \ifx\deptree@label\undefined%
             \def\deptree@label{X}%
         \fi%
-        \immediate\write\deptree@graph{E \deptree@label\deptree@space #1}
+        \immediate\write\deptree@graph{E #1 \deptree@label}
         \fi
         \deptree@origref{#1}}}
 
