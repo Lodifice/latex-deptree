@@ -2,7 +2,7 @@ import re
 import sys
 
 def run(graph_stream):
-    nodes = { "X": "<unlabeled>" }
+    nodes = {}
     edges = {}
     for line in graph_stream:
         match = re.match("^N (\S+) (\S+)$", line)
