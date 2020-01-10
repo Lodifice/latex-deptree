@@ -1,0 +1,54 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{deptree}
+
+\RequirePackage{etoolbox}
+\RequirePackage{letltxmacro}
+
+% write the graph to \jobname.gr
+\newwrite\deptree@graph
+\immediate\openout\deptree@graph=\jobname.gr
+\AtEndDocument{\immediate\closeout\deptree@graph}
+
+% write literal spaces after commands into the file
+\newcommand*\deptree@space{ }
+
+% alter \label and \ref so that they write into the graph file
+\AtBeginDocument{%
+    \let\deptree@origlabel\label
+    \renewcommand*\label[1]{\if\deptree@inenv1% only inside theorem-like environments
+        \gdef\deptree@label{#1}\immediate\write\deptree@graph{N #1 \deptree@environment}\deptree@origlabel{#1}
+        \else% leave other \label invocations untouched
+        \deptree@origlabel{#1}
+        \fi}}
+\AtBeginDocument{%
+    \let\deptree@origref\ref
+    \renewcommand*\ref[1]{\if\deptree@proof1% only inside the proof environment
+        \ifx\deptree@label\undefined%
+            \def\deptree@label{X}%
+        \fi%
+        \immediate\write\deptree@graph{E \deptree@label\deptree@space #1}
+        \fi
+        \deptree@origref{#1}}}
+
+% flag whether we're inside the proof environment
+\AtBeginDocument{\let\deptree@proof0}
+\AtBeginEnvironment{proof}{\let\deptree@proof1}
+
+% ditch label after proofs
+\AtEndEnvironment{proof}{\global\undef\deptree@label}
+
+% flag whether we're inside a math environment
+\let\deptree@inenv0
+% hook into theorem definitions to do the necessary initialisations
+\@ifpackageloaded{amsthm}{%
+    \LetLtxMacro\deptree@origynthm\@ynthm
+    \def\@ynthm#1[#2]#3{\AtBeginEnvironment{#1}{\let\deptree@inenv1\gdef\deptree@environment{#1}}%
+                        \deptree@origynthm{#1}[{#2}]{#3}}
+}{}
+\@ifpackageloaded{thmtools}{%
+    \LetLtxMacro\deptree@origdeclaretheorem\declaretheorem%
+    \renewcommand*\declaretheorem[2][]{\AtBeginEnvironment{#2}{\let\deptree@inenv1\gdef\deptree@environment{#2}}%
+                                       \deptree@origdeclaretheorem[{#1}]{#2}}
+}{}
+% TODO add ntheorem; catch the case that no theorems are defined
