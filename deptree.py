@@ -20,7 +20,7 @@ def run(graph_stream):
     nodes = { label: environment
               for label, environment in nodes.items()
               if label in edges.keys() or any(label in v for v in edges.values()) }
-    edges = { start: set(end for end in ends if end in nodes)
+    edges = { start: set(end for end in ends if end in nodes and end != start)
               for start, ends in edges.items()
               if start in nodes }
     for label, environment in nodes.items():
