@@ -17,12 +17,20 @@ def run(graph_stream):
             continue
         sys.stderr.write("warning: ignoring unrecognized line: " + line)
     print("digraph dependencies {")
-    nodes = { label: environment
-              for label, environment in nodes.items()
-              if label in edges.keys() or any(label in v for v in edges.values()) }
-    edges = { start: set(end for end in ends if end in nodes and end != start)
-              for start, ends in edges.items()
-              if start in nodes }
+    nodes_ = {}
+    while nodes != nodes_:
+        print(edges, file=sys.stderr)
+        nodes_ = nodes
+        nodes = { label: environment
+                  for label, environment in nodes_.items()
+                  if label in edges.keys() or any(label in v for v in edges.values()) }
+        edges = { start: set(end for end in ends if end in nodes and end != start)
+                  for start, ends in edges.items()
+                  if start in nodes }
+        edges = { start: ends
+                  for start, ends in edges.items()
+                  if ends }
+    print(edges, file=sys.stderr)
     for label, environment in nodes.items():
         print(graphviz_node(label, environment))
     for start, ends in edges.items():
