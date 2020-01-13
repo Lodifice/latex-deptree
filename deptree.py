@@ -31,9 +31,8 @@ def run(graph_stream):
     print("}")
 
 def graphviz_node(key, description):
-    return "{pkey} [label=\"{description} {key}\"]".format(
+    return "{pkey} [label=\"{key}\"]".format(
             pkey=printable(key),
-            description=description,
             key=key)
 
 def graphviz_edge(start, end):
