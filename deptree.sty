@@ -40,12 +40,12 @@
 % hook into theorem definitions to do the necessary initialisations
 \@ifpackageloaded{amsthm}{%
     \LetLtxMacro\deptree@origynthm\@ynthm
-    \def\@ynthm#1[#2]#3{\AtBeginEnvironment{#1}{\let\deptree@inenv1\gdef\deptree@environment{#1}}%
+    \def\@ynthm#1[#2]#3{\AtBeginEnvironment{#1}{\global\undef\deptree@label\let\deptree@inenv1\gdef\deptree@environment{#1}}%
                         \deptree@origynthm{#1}[{#2}]{#3}}
 }{}
 \@ifpackageloaded{thmtools}{%
     \LetLtxMacro\deptree@origdeclaretheorem\declaretheorem%
-    \renewcommand*\declaretheorem[2][]{\AtBeginEnvironment{#2}{\let\deptree@inenv1\gdef\deptree@environment{#2}}%
+    \renewcommand*\declaretheorem[2][]{\AtBeginEnvironment{#2}{\global\undef\deptree@label\let\deptree@inenv1\gdef\deptree@environment{#2}}%
                                        \deptree@origdeclaretheorem[{#1}]{#2}}
 }{}
 % TODO add ntheorem; catch the case that no theorems are defined
