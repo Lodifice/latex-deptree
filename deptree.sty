@@ -24,8 +24,8 @@
         \ifx\deptree@label\undefined%
             \def\deptree@label{X}%
         \fi%
-        \immediate\write\deptree@graph{E #1 \deptree@label}
-        \fi
+        \immediate\write\deptree@graph{E #1 \deptree@label}%
+        \fi%
         \deptree@origref{#1}}}
 
 % flag whether we're inside the proof environment
